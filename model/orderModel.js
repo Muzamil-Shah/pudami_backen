@@ -40,7 +40,11 @@ const orderSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   isPaid: { type: Boolean, default: false },
   paidAt: { type: Date },
-  status: { type: String, default: "ordered" },
+  status: {
+    type: String,
+    default: "ordered",
+    updateAt: { type: Date, default: Date.now },
+  },
   createAt: { type: Date, default: Date.now },
 });
 
