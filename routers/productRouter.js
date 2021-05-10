@@ -41,7 +41,8 @@ productRouter.get(
 productRouter.post("/", isAuth, createProduct);
 
 productRouter.put(
-  "/update", isAuth,
+  "/update",
+  isAuth,
   expressAsyncHandler(async (req, res) => {
     const product = await Product.findById(req.body.productId);
     // console.log("afdgadsfg", product);
@@ -64,6 +65,13 @@ productRouter.put(
         status: updateProduct.status,
       });
     }
+  })
+);
+
+productRouter.post(
+  "/admin/remove",
+  expressAsyncHandler(async (req, res) => {
+    await Product.findByIdAndDelete(req.body._id);
   })
 );
 

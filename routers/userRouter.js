@@ -3,19 +3,19 @@ import data from "../data.js";
 import User from "../model/userModel.js";
 import bcrypt from "bcryptjs";
 import expressAsyncHandler from "express-async-handler";
-import { generateToken, isAuth } from "../utils.js";
+import { generateToken, isAdmin, isAuth } from "../utils.js";
 
 const userRouter = express.Router();
 
-userRouter.get(
-  "/seed",
-  expressAsyncHandler(async (req, res) => {
-    // await User.remove();
-    const createUsers = await User.insertMany(data.users);
+// userRouter.get(
+//   "/seed",
+//   expressAsyncHandler(async (req, res) => {
+//     // await User.remove();
+//     const createUsers = await User.insertMany(data.users);
 
-    res.send({ createUsers });
-  })
-);
+//     res.send({ createUsers });
+//   })
+// );
 
 userRouter.post(
   "/signin",
@@ -116,9 +116,9 @@ userRouter.put(
       user.profile.stats = req.body.stats || user.profile.stats;
       user.profile.disable = req.body.disable || user.profile.disable;
       user.email = req.body.email || user.email;
-      // if (req.body.password) {
-      //   user.password = bcrypt.hashSync(req.body.password, 8);
-      // }
+      if (req.body.password) {
+        user.password = bcrypt.hashSync(req.body.password, 8);
+      }
 
       const updateUser = await user.save();
       res.send({
@@ -139,6 +139,15 @@ userRouter.put(
         token: generateToken(updateUser),
       });
     }
+  })
+);
+
+userRouter.post(
+  "/admin/remove",
+  expressAsyncHandler(async (req, res) => {
+    // console.log(req.body);
+    await User.findByIdAndDelete(req.body._id);
+    res.send("delete successfuly");
   })
 );
 
